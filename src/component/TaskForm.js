@@ -30,16 +30,18 @@ export default class TaskForm extends Component {
     onSubmit = (event) => {
         event.preventDefault();
         this.props.onSubmit(this.state);
-        this.onClear();
+       // this.onClear();
         this.onCloseForm()
     }
 
-    onClear = () => {
+    onClear = (event) => {
+        event.preventDefault();
         this.setState({
             id: '',
             name: '',
             status: true
         });
+        this.onCloseForm();
     }
 
     componentWillMount() {
@@ -53,6 +55,27 @@ export default class TaskForm extends Component {
         }
     }
 
+    componentWillReceiveProps(nextProps){
+        if(nextProps && nextProps.task) {
+            var task = nextProps.task;
+            if(task) {
+                this.setState({
+                    id: task.id,
+                    name: task.name,
+                    status: task.status
+                });
+            }
+        } else if(!nextProps.task){
+            this.setState({
+                id: '',
+                name: '',
+                status: true
+            });
+        }
+
+    
+    }
+
     render() {
         var { id } = this.state;
         return (
@@ -64,7 +87,7 @@ export default class TaskForm extends Component {
 
                 </div>
                 <div className="panel-body">
-                    <form onSubmit={ this.onSubmit }>
+                    <form>
                         <div className="form-group">
                             <label>Tên :</label>
                             <input 
@@ -86,8 +109,8 @@ export default class TaskForm extends Component {
                         </select>
                         <br />
                         <div className="text-center">
-                            <button type="submit" className="btn btn-warning">{id ? "Cập nhật" : "Thêm"}</button>&nbsp;
-                        <button className="btn btn-danger" onClick={this.onClear}>Hủy Bỏ</button>
+                            <button onClick={ this.onSubmit  } className="btn btn-warning">{id ? "Cập nhật" : "Thêm"}</button>&nbsp;
+                            <button className="btn btn-danger" onClick={ this.onClear }>Hủy Bỏ</button>
                         </div>
                     </form>
                 </div>
